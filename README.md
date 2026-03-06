@@ -1,6 +1,146 @@
-# License Plate Detection + OCR
+# Mobile License Plate Reader (Browser-Based)
 
-This project now leverages **ncnn** for the YOLOv8 portion, providing improved **speed** and **memory management**. The previous YOLOv8 ONNX model and fast has been retired and moved to the `onnx_project` folder for archival purposes. The new **ncnn-based YOLOv8** implementation enhances both performance and resource efficiency, making it a better choice for web applications.
+A lightweight **browser-based license plate detection and recognition system** that runs entirely on-device using **WebAssembly (WASM)**.
+
+This project combines **YOLOv8 object detection** with **PaddleOCR v5 text recognition**, optimized with **ncnn**, to perform real-time inference directly in a **mobile web browser**.
+
+No server or cloud inference required.
+
+---
+
+## Demo
+
+The application detects a license plate in the camera/image frame and overlays:
+
+- 📦 A **bounding box** around the detected plate
+- 🔤 The **recognized license plate text**
+
+All processing happens **locally in the browser**.
+
+---
+
+## Features
+
+- 📱 **Mobile-friendly** browser inference
+- ⚡ **Fast inference with ncnn + WebAssembly**
+- 🎯 **YOLOv8 license plate detection**
+- 🔎 **PaddleOCR v5 text recognition**
+- 🔐 **Fully client-side (no backend required)**
+- 🌐 Works in modern browsers
+
+---
+
+## How It Works
+
+Pipeline:
+
+1. **YOLOv8 (ncnn + WASM)** detects the license plate region.
+2. The detected plate is **cropped from the image**.
+3. **PaddleOCR v5** processes the crop and extracts the text.
+4. The UI overlays:
+   - a **bounding box**
+   - the **recognized plate number**
+
+```
+Camera/Image
+      │
+      ▼
+YOLOv8 License Plate Detection
+      │
+      ▼
+Plate Crop
+      │
+      ▼
+PaddleOCR v5 Recognition
+      │
+      ▼
+Detected Plate Text
+```
+
+---
+
+## Tech Stack
+
+- **YOLOv8** – License plate detection
+- **PaddleOCR v5** – Text recognition
+- **ncnn** – High-performance neural network inference
+- **WebAssembly (WASM)** – Browser execution
+- **JavaScript** – Frontend logic
+
+---
+
+## Running Locally
+
+Because the project loads WASM and model files, it must be served from a local web server.
+
+### Option 1 — VS Code Live Server (Recommended)
+
+1. Open the project folder in **VS Code**
+2. Install the **Live Server** extension
+3. Open `index.html`
+4. Right-click → **Open with Live Server**
+5. The app will launch in your browser
+
+---
+
+### Option 2 — Simple Python Server
+
+```bash
+python -m http.server 8080
+```
+
+Then open:
+
+```
+http://localhost:8080
+```
+
+---
+
+## Usage
+
+Once the page loads:
+
+1. Provide an image or camera input.
+2. The app will automatically:
+   - Detect the **license plate**
+   - Extract the **text**
+
+3. Results are displayed with:
+   - A **bounding box**
+   - The **recognized license number**
+
+---
+
+## Model Limitations
+
+Current configuration:
+
+- Supports **Latin-alphabet license plates**
+- Maximum output length: **~8 characters**
+- Best results when:
+  - Plate is **clearly visible**
+  - Image is **not heavily blurred**
+  - Plate occupies a reasonable portion of the frame
+
+---
+
+## Performance Notes
+
+Running inference in the browser has trade-offs:
+
+- Performance varies by **device CPU**
+- Using **ncnn + WASM** helps keep inference fast and lightweight
+
+## License
+
+This project uses models and frameworks from:
+
+- YOLOv8
+- PaddleOCR
+- ncnn
+
+Please review their respective licenses before commercial use.
 
 ## How to Run
 
@@ -12,26 +152,15 @@ This project now leverages **ncnn** for the YOLOv8 portion, providing improved *
 
 ## Using the App
 
-1. Click the **"Choose File"** button to upload an image of a car with a visible license plate.
-2. The app will automatically:
+1. The app will automatically:
    - Detect the license plate using **YOLOv8 with ncnn**.
    - Recognize the plate text using **PaddleOCRv5**.
-3. The detected plate will be highlighted with a rectangle, and the recognized text will appear above it.
+2. The detected plate will be highlighted with a rectangle, and the recognized text will appear above it.
 
 ## Notes
 
 - The OCR model supports **Latin-alphabet plates** and outputs up to **8 characters**.
 - For best results, ensure the plate is clearly visible.
-
-It looks like the sandbox file link failed on upload. I regenerated the file. Try this download instead:
-
-**Download the Markdown file:**
-[setup_ncnn_yolo_paddleocr.md](sandbox:/mnt/data/setup_ncnn_yolo_paddleocr.md)
-
-If it still fails, you can also copy the full Markdown directly below and save it as
-`setup_ncnn_yolo_paddleocr.md`.
-
----
 
 # ncnn Setup and Model Conversion Guide
 
